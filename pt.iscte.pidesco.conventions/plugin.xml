@@ -3,7 +3,7 @@
 <plugin>
    <extension
          id="co1"
-         name="conventions"
+         name="Java Conventions Checker"
          point="pt.iscte.pidesco.view">
       <view
             class="pt.iscte.pidesco.conventions.TestView">
