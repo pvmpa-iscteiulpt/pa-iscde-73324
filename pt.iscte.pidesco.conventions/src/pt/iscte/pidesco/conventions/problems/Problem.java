@@ -14,15 +14,18 @@ public abstract class Problem {
 	private int endingLine;
 	private int startingColumn;
 	private int endingColumn;
+	
+	private ProblemType problemType;
 
 	private String elementName; // TODO see if this is necessary later.
 
-	public Problem(String filePath, int startingLine, int endingLine, int startingColumn, int endingColumn) {
+	public Problem(String filePath, int startingLine, int endingLine, int startingColumn, int endingColumn, ProblemType problemType) {
 		setFilePath(filePath);
 		this.startingLine = startingLine;
 		this.endingLine = endingLine;
 		this.startingColumn = startingColumn;
 		this.endingColumn = endingColumn;
+		this.problemType = problemType;
 	}
 
 	public void setFilePath(String filePath) {
@@ -48,6 +51,10 @@ public abstract class Problem {
 
 	public int getEndingColumn() {
 		return endingColumn;
+	}
+	
+	public ProblemType getProblemType() {
+		return problemType;
 	}
 
 	public void setStartingLine(int startingLine) {

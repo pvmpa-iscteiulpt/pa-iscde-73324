@@ -13,10 +13,6 @@ import pt.iscte.pidesco.extensibility.PidescoView;
 
 public class TestView implements PidescoView {
 
-	public TestView() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.HORIZONTAL));

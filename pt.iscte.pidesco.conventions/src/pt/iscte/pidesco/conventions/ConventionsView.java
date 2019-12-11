@@ -11,6 +11,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
+
+import pt.iscte.pidesco.conventions.problems.Problem;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
@@ -20,7 +24,7 @@ import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 public class ConventionsView implements PidescoView {
 
 	ArrayList<String> filesToAnalyze = new ArrayList<String>();
-	// TODO figure this out: ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.
+	ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
