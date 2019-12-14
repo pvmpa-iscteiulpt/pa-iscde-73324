@@ -83,6 +83,12 @@ public class ConventionsView implements PidescoView {
 		//TODO selection buttons for:
 		//all of the available convention violation types
 		//all of the code smell types
+		
+		
+		
+		//TODO action buttons for:
+		//pull the lever, kronk (run the checker)
+		//filter classes in the Project Browser so that only those with problems are displayed
 
 	}
 }

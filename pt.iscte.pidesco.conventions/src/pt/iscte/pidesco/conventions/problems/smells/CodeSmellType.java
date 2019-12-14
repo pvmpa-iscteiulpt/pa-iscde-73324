@@ -2,6 +2,11 @@ package pt.iscte.pidesco.conventions.problems.smells;
 
 import pt.iscte.pidesco.conventions.problems.ProblemType;
 
+/**
+ * Lists out the types of Code Smells.
+ * @author grovy
+ *
+ */
 public enum CodeSmellType implements ProblemType {
 	LONG_METHOD {
 		@Override

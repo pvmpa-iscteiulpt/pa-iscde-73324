@@ -1,5 +1,10 @@
 package pt.iscte.pidesco.conventions.problems;
 
+/**
+ * Defines required behaviour for specific types of Problems.
+ * @author grovy
+ *
+ */
 public interface ProblemType {
 	/**
 	 * Defines a proper name for the Problem Type, so it can be sorted out by the
