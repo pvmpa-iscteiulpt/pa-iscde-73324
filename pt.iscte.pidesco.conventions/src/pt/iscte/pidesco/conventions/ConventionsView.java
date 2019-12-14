@@ -37,19 +37,19 @@ public class ConventionsView implements PidescoView {
 	}
 
 	/**
-	 * Initializes the Java Editor Service for the Java Conventions Checker, so it can
-	 * annotate convention violations/code smells in problematic files.
+	 * Initialises the Java Editor Service for the Java Conventions Checker, so it
+	 * can annotate convention violations/code smells in problematic files.
+	 * 
 	 * @param context
 	 */
 	private void initializeJavaEditorService(BundleContext context) {
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		JavaEditorServices javaServ = context.getService(serviceReference);
 
-
 	}
 
 	/**
-	 * Initializes the Project Browser Service for the Java Conventions Checker, in
+	 * Initialises the Project Browser Service for the Java Conventions Checker, in
 	 * order to gather a list of classes that are meant to be checked. Each class is
 	 * represented by their absolute file path for loading simplicity's sake.
 	 *
@@ -66,7 +66,7 @@ public class ConventionsView implements PidescoView {
 				ArrayList<String> newFiles = new ArrayList<String>();
 				for (SourceElement element : selection) {
 					String filePath = element.getFile().getAbsolutePath();
-					if (filePath.endsWith(".java")) { //we only want classes, interfaces, etc
+					if (filePath.endsWith(".java")) { // we only want classes, interfaces, etc
 						newFiles.add(filePath);
 					}
 				}
@@ -80,6 +80,8 @@ public class ConventionsView implements PidescoView {
 	}
 
 	private void createButtons(Composite viewArea) {
+		
+		
 
 	}
 }

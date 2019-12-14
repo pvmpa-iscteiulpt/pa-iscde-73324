@@ -10,27 +10,21 @@ package pt.iscte.pidesco.conventions.problems;
 public abstract class Problem {
 
 	private String filePath;
-	private int startingLine;
-	private int endingLine;
-	private int startingColumn;
-	private int endingColumn;
+	private int line;
 	
 	private ProblemType problemType;
 
 	private String elementName; // TODO see if this is necessary later.
 
-	public Problem(String filePath, int startingLine, int endingLine, int startingColumn, int endingColumn, ProblemType problemType) {
+	public Problem(String filePath, int line, ProblemType problemType) {
 		setFilePath(filePath);
-		this.startingLine = startingLine;
-		this.endingLine = endingLine;
-		this.startingColumn = startingColumn;
-		this.endingColumn = endingColumn;
+		this.line = line;
 		this.problemType = problemType;
 	}
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath.trim();
-		// TODO initialize elementName here if necessary.
+		// TODO initialise elementName here if necessary.
 	}
 
 	public String getFilePath() {
@@ -38,19 +32,7 @@ public abstract class Problem {
 	}
 
 	public int getStartingLine() {
-		return startingLine;
-	}
-
-	public int getEndingLine() {
-		return endingLine;
-	}
-
-	public int getStartingColumn() {
-		return startingColumn;
-	}
-
-	public int getEndingColumn() {
-		return endingColumn;
+		return line;
 	}
 	
 	public ProblemType getProblemType() {
@@ -58,19 +40,7 @@ public abstract class Problem {
 	}
 
 	public void setStartingLine(int startingLine) {
-		this.startingLine = startingLine;
-	}
-
-	public void setEndingLine(int endingLine) {
-		this.endingLine = endingLine;
-	}
-
-	public void setStartingColumn(int startingColumn) {
-		this.startingColumn = startingColumn;
-	}
-
-	public void setEndingColumn(int endingColumn) {
-		this.endingColumn = endingColumn;
+		this.line = startingLine;
 	}
 
 
