@@ -11,6 +11,11 @@ import org.eclipse.swt.widgets.Text;
 
 import pt.iscte.pidesco.extensibility.PidescoView;
 
+/**
+ * delete
+ * @author grovy
+ *
+ */
 public class TestView implements PidescoView {
 
 	@Override

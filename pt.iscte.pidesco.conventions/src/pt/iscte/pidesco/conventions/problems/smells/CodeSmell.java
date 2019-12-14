@@ -1,4 +1,6 @@
-package pt.iscte.pidesco.conventions.problems;
+package pt.iscte.pidesco.conventions.problems.smells;
+
+import pt.iscte.pidesco.conventions.problems.Problem;
 
 /**
  * Defines a code smell. These are specialised instances of Problems that warn

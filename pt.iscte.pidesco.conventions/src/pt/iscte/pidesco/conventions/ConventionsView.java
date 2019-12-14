@@ -80,8 +80,9 @@ public class ConventionsView implements PidescoView {
 	}
 
 	private void createButtons(Composite viewArea) {
-		
-		
+		//TODO selection buttons for:
+		//all of the available convention violation types
+		//all of the code smell types
 
 	}
 }
