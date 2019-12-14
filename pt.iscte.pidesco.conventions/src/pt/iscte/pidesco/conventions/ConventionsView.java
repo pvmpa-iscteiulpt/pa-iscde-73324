@@ -2,11 +2,16 @@ package pt.iscte.pidesco.conventions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -15,6 +20,9 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
 import pt.iscte.pidesco.conventions.problems.Problem;
+import pt.iscte.pidesco.conventions.problems.ProblemType;
+import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType;
+import pt.iscte.pidesco.conventions.problems.smells.CodeSmellType;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
@@ -25,6 +33,7 @@ public class ConventionsView implements PidescoView {
 
 	ArrayList<String> filesToAnalyze = new ArrayList<String>();
 	ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
+	HashMap<ProblemType, Button> problemCheckboxes = new HashMap<ProblemType, Button>();
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -45,7 +54,7 @@ public class ConventionsView implements PidescoView {
 	private void initializeJavaEditorService(BundleContext context) {
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		JavaEditorServices javaServ = context.getService(serviceReference);
-
+		//TODO actually modify the java source files to annotate problems
 	}
 
 	/**
@@ -84,7 +93,24 @@ public class ConventionsView implements PidescoView {
 		//all of the available convention violation types
 		//all of the code smell types
 		
+		ArrayList<ProblemType> problems = new ArrayList<ProblemType>(); 
 		
+		ConventionViolationType[] violations = ConventionViolationType.values();
+		for (ConventionViolationType violation: violations) {
+			problems.add(violation);
+		}
+		
+		CodeSmellType[] smells = CodeSmellType.values();
+		for (CodeSmellType smell: smells) {
+			problems.add(smell);
+		}
+		
+		for (ProblemType problem: problems) {
+			Button b = new Button(viewArea, SWT.CHECK);
+			b.setText(problem.getProperName());
+			this.problemCheckboxes.put(problem, b);
+		}
+		viewArea.layout();
 		
 		//TODO action buttons for:
 		//pull the lever, kronk (run the checker)
