@@ -19,6 +19,7 @@ import org.osgi.framework.ServiceReference;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
+import pt.iscte.pidesco.conventions.parser.ConventionCheckerVisitor;
 import pt.iscte.pidesco.conventions.problems.Problem;
 import pt.iscte.pidesco.conventions.problems.ProblemType;
 import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType;
@@ -54,7 +55,7 @@ public class ConventionsView implements PidescoView {
 	private void initializeJavaEditorService(BundleContext context) {
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		JavaEditorServices javaServ = context.getService(serviceReference);
-		//TODO actually modify the java source files to annotate problems
+		// TODO actually modify the java source files to annotate problems
 	}
 
 	/**
@@ -89,32 +90,77 @@ public class ConventionsView implements PidescoView {
 	}
 
 	private void createButtons(Composite viewArea) {
-		//TODO selection buttons for:
-		//all of the available convention violation types
-		//all of the code smell types
-		
-		ArrayList<ProblemType> problems = new ArrayList<ProblemType>(); 
-		
+		// TODO selection buttons for:
+		// all of the available convention violation types
+		// all of the code smell types
+
+		ArrayList<ProblemType> problems = new ArrayList<ProblemType>();
+
 		ConventionViolationType[] violations = ConventionViolationType.values();
-		for (ConventionViolationType violation: violations) {
+		for (ConventionViolationType violation : violations) {
 			problems.add(violation);
 		}
-		
+
 		CodeSmellType[] smells = CodeSmellType.values();
-		for (CodeSmellType smell: smells) {
+		for (CodeSmellType smell : smells) {
 			problems.add(smell);
 		}
-		
-		for (ProblemType problem: problems) {
+
+		for (ProblemType problem : problems) {
 			Button b = new Button(viewArea, SWT.CHECK);
 			b.setText(problem.getProperName());
 			this.problemCheckboxes.put(problem, b);
 		}
 		viewArea.layout();
-		
-		//TODO action buttons for:
-		//pull the lever, kronk (run the checker)
-		//filter classes in the Project Browser so that only those with problems are displayed
+
+		// TODO action buttons for:
+		// pull the lever, kronk (run the checker)
+		// filter classes in the Project Browser so that only those with problems are
+		// displayed
+		Button b = new Button(viewArea, SWT.PUSH);
+		b.setText("Run Checker");
+
+		b.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				b.setEnabled(false); // we don't want the user to run the checker multiple times at once
+				ArrayList<ProblemType> problemsToCheck = getProblemsToCheck();
+				ConventionCheckerVisitor checker = new ConventionCheckerVisitor(problemsToCheck, filesToAnalyze);
+				try {
+					filesAndProblems = checker.runChecker();
+					warnUserAboutFoundProblems();
+				} finally {
+					b.setEnabled(true); // whatever happens, the button MUST be enabled again
+				}
+			}
+
+			private void warnUserAboutFoundProblems() {
+				String barrier = "===================================";
+				System.out.println(barrier);
+				System.out.println("Java Convention Checker");
+				Map<String, Collection<Problem>> fileProblemMap = filesAndProblems.asMap();
+				for (String problematicFile: fileProblemMap.keySet()) {
+					System.out.println(barrier);
+					System.out.println(problematicFile);
+					Collection<Problem> problemsInFile = fileProblemMap.get(problematicFile);
+					for (Problem problemInFile: problemsInFile) {
+						System.out.println(problemInFile.getProblemType().getProperName() + " on Line " + problemInFile.getStartingLine() + ": " + problemInFile.getElementName());
+					}
+				}
+				System.out.println(barrier);
+				System.out.println("Done.");
+			}
+
+			private ArrayList<ProblemType> getProblemsToCheck() {
+				ArrayList<ProblemType> problemsToCheck = new ArrayList<ProblemType>();
+				for (ProblemType problem : problemCheckboxes.keySet()) {
+					if (problemCheckboxes.get(problem).getSelection()) {
+						problemsToCheck.add(problem);
+					}
+				}
+				return problemsToCheck;
+			}
+		});
 
 	}
 }

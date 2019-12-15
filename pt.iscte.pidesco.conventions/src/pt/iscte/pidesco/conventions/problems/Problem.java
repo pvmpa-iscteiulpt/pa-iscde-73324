@@ -14,17 +14,17 @@ public abstract class Problem {
 	
 	private ProblemType problemType;
 
-	private String elementName; // TODO see if this is necessary later.
+	private String elementName;
 
-	public Problem(String filePath, int line, ProblemType problemType) {
+	public Problem(String filePath, int line, ProblemType problemType, String elementName) {
 		setFilePath(filePath);
 		this.line = line;
 		this.problemType = problemType;
+		this.elementName = elementName;
 	}
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath.trim();
-		// TODO initialise elementName here if necessary.
 	}
 
 	public String getFilePath() {
@@ -37,6 +37,10 @@ public abstract class Problem {
 	
 	public ProblemType getProblemType() {
 		return problemType;
+	}
+
+	public String getElementName() {
+		return elementName;
 	}
 
 	public void setStartingLine(int startingLine) {

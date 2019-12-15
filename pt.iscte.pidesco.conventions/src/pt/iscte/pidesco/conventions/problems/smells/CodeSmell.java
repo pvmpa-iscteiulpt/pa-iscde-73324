@@ -13,8 +13,8 @@ import pt.iscte.pidesco.conventions.problems.Problem;
  */
 public class CodeSmell extends Problem {
 
-	public CodeSmell(String filePath, int line, CodeSmellType smell) {
-		super(filePath, line, smell);
+	public CodeSmell(String filePath, int line, CodeSmellType smell, String elementName) {
+		super(filePath, line, smell, elementName);
 	}
 
 }

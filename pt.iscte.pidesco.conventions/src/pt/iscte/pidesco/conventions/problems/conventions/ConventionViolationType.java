@@ -20,10 +20,10 @@ public enum ConventionViolationType implements ProblemType {
 			return "SNAKE_CASE for static final consts";
 		}
 	},
-	PARAMETER_MODIFIED {
+	CLASS_NAME_CASE_VIOLATION {
 		@Override
 		public String getProperName() {
-			return "Parameter Modifications";
+			return "CamelCase for class declarations";
 		}
 	}
 }
