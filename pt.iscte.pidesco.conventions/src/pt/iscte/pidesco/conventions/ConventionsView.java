@@ -2,10 +2,15 @@ package pt.iscte.pidesco.conventions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,7 +54,7 @@ public class ConventionsView implements PidescoView {
 	/**
 	 * Initialises the Java Editor Service for the Java Conventions Checker, so it
 	 * can annotate convention violations/code smells in problematic files.
-	 * 
+	 *
 	 * @param context
 	 */
 	private void initializeJavaEditorService(BundleContext context) {
@@ -111,7 +116,10 @@ public class ConventionsView implements PidescoView {
 			b.setText(problem.getProperName());
 			this.problemCheckboxes.put(problem, b);
 		}
-		viewArea.layout();
+
+
+		createExtensionsViolations(viewArea);
+
 
 		// TODO action buttons for:
 		// pull the lever, kronk (run the checker)
@@ -161,6 +169,28 @@ public class ConventionsView implements PidescoView {
 				return problemsToCheck;
 			}
 		});
+
+		viewArea.layout();
+
+	}
+
+	private void createExtensionsViolations(Composite viewArea) {
+		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
+		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.testext");
+
+		IExtension[] extensions = extensionPoint.getExtensions();
+		for(IExtension e : extensions) {
+			IConfigurationElement[] confElements = e.getConfigurationElements();
+			for(IConfigurationElement c : confElements) {
+				String s = c.getAttribute("name");
+				try {
+					Object o = c.createExecutableExtension("class");
+				} catch (CoreException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
 
 	}
 }
