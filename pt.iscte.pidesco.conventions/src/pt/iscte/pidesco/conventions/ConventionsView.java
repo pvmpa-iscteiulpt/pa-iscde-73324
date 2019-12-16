@@ -177,6 +177,7 @@ public class ConventionsView implements PidescoView {
 	private void createExtensionsViolations(Composite viewArea) {
 		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.testext");
+		//FIXME Change the extensionpoint!
 
 		IExtension[] extensions = extensionPoint.getExtensions();
 		for(IExtension e : extensions) {
@@ -184,7 +185,7 @@ public class ConventionsView implements PidescoView {
 			for(IConfigurationElement c : confElements) {
 				String s = c.getAttribute("name");
 				try {
-					Object o = c.createExecutableExtension("class");
+					ProblemType o = (ProblemType) c.createExecutableExtension("class");
 				} catch (CoreException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
