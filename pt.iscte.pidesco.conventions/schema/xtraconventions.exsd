@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="pt.iscte.pidesco.conventions" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="pt.iscte.pidesco.conventions" id="xtraconventions" name="Extra Conventions"/>
+      </appinfo>
+      <documentation>
+         This extension point allows developers to add extra problem checks to the system seamlessly.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="item" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="item">
+      <complexType>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.conventions.problems.ProblemType"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         23/12/2019
+23 December 2019
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Coming soon
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         Instructions:
+1. Create a new plug-in project and define this as an extension
+
+2. Add pt.iscte.pidesco.conventions as a required project on your build path
+
+3. Now you have two choices:
+Implement pt.iscte.conventions.problems.ProblemType on a Class
+OR
+Implement pt.iscte.conventions.problems.ProblemType on an Enum &lt;--- This is the recommended option because it allows you to assign problems to unique static identifiers easily (even if the code looks a bit weird), see pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType as an example!
+
+4. Add your new plug-in on pidesco&apos;s run configuration.
+
+5. You should see your new problem(s) on the Java Conventions Checker plug-in, and once you run the checker and if your problems are detected, it&apos;ll register them.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         Got nothin&apos; sauce boss
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Be reasonable
+      </documentation>
+   </annotation>
+
+</schema>

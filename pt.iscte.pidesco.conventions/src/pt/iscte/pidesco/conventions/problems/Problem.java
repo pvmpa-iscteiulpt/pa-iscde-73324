@@ -2,7 +2,7 @@ package pt.iscte.pidesco.conventions.problems;
 
 /**
  * Defines a "problem" with some Java source element. These are used to keep
- * track of violations that are spotted in analyzed code.
+ * track of violations that are spotted in analyzed code.<br>
  *
  * @author pvmpa-iscteiulpt
  *

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -18,10 +17,11 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
+import pt.iscte.pidesco.conventions.problems.CommonCodeChecks;
 import pt.iscte.pidesco.conventions.problems.Problem;
 import pt.iscte.pidesco.conventions.problems.ProblemType;
 import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolation;
-import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType;
+import pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation;
 
 public class ConventionCheckerVisitor extends ASTVisitor {
 
@@ -45,67 +45,26 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	}
 
 	/**
-	 * Given any node of the AST, returns the source code line where it was parsed.
+	 * Adds a problem to the problem list.
+	 * 
+	 * @param violation - the committed violation.
 	 */
-	private int sourceLine(ASTNode node) {
-		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition());
-	}
-	
-	/**
-	 * @param name
-	 * @param line
-	 * @param potentialProblem
-	 */
-	private void addProblem(String name, int line, ProblemType potentialProblem) {
-		ConventionViolation violation = new ConventionViolation(this.currentFile, line,
-				(ConventionViolationType) potentialProblem, name);
+	private void addProblem(ConventionViolation violation) {
 		this.detectedProblems.put(this.currentFile, violation);
 	}
 
-	
 	/**
+	 * Delegates the processing of a potential problem to the available problem type
+	 * processors.
 	 * 
-	 * @param name
-	 * @param nodeType
-	 * @param supposedToStartWithUnderscore
-	 * @param line
-	 * @param potentialProblem
+	 * @param node - the current AST node
 	 */
-	private void checkUnderscore(String name, String nodeType, boolean supposedToStartWithUnderscore, int line,
-			ProblemType potentialProblem) {
-		boolean isProblem = false;
-		if (name.contains(new String("_")) && !supposedToStartWithUnderscore) {
-			isProblem = true;
-		} else if (!name.contains(new String("_")) && supposedToStartWithUnderscore) {
-			isProblem = true;
-		}
-		if (isProblem) {
-			addProblem(name, line, potentialProblem);
-		}
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param name
-	 * @param nodeType
-	 * @param supposedToBeLowercaseAtStart
-	 * @param line
-	 * @param potentialProblem
-	 */
-	private void checkLowerCaseAtStart(String name, String nodeType, boolean supposedToBeLowercaseAtStart, int line,
-			ProblemType potentialProblem) {
-		Character firstChar = name.charAt(0);
-		boolean isProblem = false;
-		if (Character.isLetter(firstChar)) {
-			if (Character.isLowerCase(firstChar) && !supposedToBeLowercaseAtStart) {
-				isProblem = true;
-			} else if (!Character.isLowerCase(firstChar) && supposedToBeLowercaseAtStart) {
-				isProblem = true;
+	private void delegateProblemProcessing(ASTNode node) {
+		for (ProblemType problem : this.problemsToCheck) {
+			ConventionViolation violation = problem.analyzeCode(node, this.currentFile);
+			if (violation != null) {
+				addProblem(violation);
 			}
-		}
-		if (isProblem) {
-			addProblem(name, line, potentialProblem);
 		}
 	}
 
@@ -114,13 +73,7 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(MethodDeclaration node) {
-		String name = node.getName().toString();
-
-		ConventionViolationType problem = ConventionViolationType.NON_STATIC_FINAL_CASE_VIOLATION;
-		if (this.problemsToCheck.contains(problem)) {
-			checkLowerCaseAtStart(name, "Method", true, sourceLine(node), problem);
-			checkUnderscore(name, "Method", false, sourceLine(node), problem);
-		}
+		delegateProblemProcessing(node);
 		return true;
 	}
 
@@ -130,13 +83,9 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		String name = node.getName().toString();
-		System.out.println("Parsing class " + name + ", starting on line " + this.sourceLine(node));
+		System.out.println("Parsing class " + name + ", starting on line " + CommonCodeChecks.sourceLine(node));
 
-		ConventionViolationType problem = ConventionViolationType.CLASS_NAME_CASE_VIOLATION;
-		if (this.problemsToCheck.contains(problem)) {
-			checkLowerCaseAtStart(name, "Class", false, sourceLine(node), problem);
-			checkUnderscore(name, "Class", false, sourceLine(node), problem);
-		}
+		delegateProblemProcessing(node);
 		return true;
 	}
 
@@ -145,24 +94,7 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(FieldDeclaration node) {
-
-		// loop for several variables in the same declaration
-		for (Object o : node.fragments()) {
-			VariableDeclarationFragment var = (VariableDeclarationFragment) o;
-			String name = var.getName().toString();
-
-			boolean isStatic = Modifier.isStatic(node.getModifiers());
-			boolean isFinal = Modifier.isFinal(node.getModifiers());
-			if (isStatic && isFinal) {
-				for (char c : name.toCharArray()) {
-					if (Character.isLowerCase(c)) {
-						addProblem(name, sourceLine(node), ConventionViolationType.STATIC_FINAL_CASE_VIOLATION);
-						break;
-					}
-				}
-			}
-
-		}
+		delegateProblemProcessing(node);
 		return false; // false to avoid child VariableDeclarationFragment to be processed again
 	}
 
@@ -171,48 +103,33 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(SingleVariableDeclaration node) {
-		String name = node.getName().toString();
+		// another visitor can be passed to process the method (parent of parameter)
+		class AssignVisitor extends ASTVisitor {
+			// visits assignments (=, +=, etc)
+			@Override
+			public boolean visit(Assignment node) {
+				delegateProblemProcessing(node);
+				return true;
+			}
 
-//		// another visitor can be passed to process the method (parent of parameter)
-//		class AssignVisitor extends ASTVisitor {
-//			// visits assignments (=, +=, etc)
-//			@Override
-//			public boolean visit(Assignment node) {
-//				String varName = node.getLeftHandSide().toString();
-//				if (varName.equals(name)) {
-//					System.err.println("Parameter " + varName + " is being modified!! (assignment)");
-//				}
-//				return true;
-//			}
-//
-//			// visits post increments/decrements (i++, i--)
-//			@Override
-//			public boolean visit(PostfixExpression node) {
-//				String varName = node.getOperand().toString();
-//				if (varName.equals(name)) {
-//					System.err.println("Parameter " + varName + " is being modified!! (post increment/decrement)");
-//				}
-//				return true;
-//			}
-//
-//			// visits pre increments/decrements (++i, --i)
-//			@Override
-//			public boolean visit(PrefixExpression node) {
-//				String varName = node.getOperand().toString();
-//				if (varName.equals(name)) {
-//					System.err.println("Parameter " + varName + " is being modified!! (pre increment/decrement)");
-//				}
-//				return true;
-//			}
-//		}
-//		AssignVisitor assignVisitor = new AssignVisitor();
-//		node.getParent().accept(assignVisitor);
+			// visits post increments/decrements (i++, i--)
+			@Override
+			public boolean visit(PostfixExpression node) {
+				delegateProblemProcessing(node);
+				return true;
+			}
 
-		ConventionViolationType problem = ConventionViolationType.NON_STATIC_FINAL_CASE_VIOLATION;
-		if (this.problemsToCheck.contains(problem)) {
-			checkLowerCaseAtStart(name, "Parameter", true, sourceLine(node), problem);
-			checkUnderscore(name, "Parameter", false, sourceLine(node), problem);
+			// visits pre increments/decrements (++i, --i)
+			@Override
+			public boolean visit(PrefixExpression node) {
+				delegateProblemProcessing(node);
+				return true;
+			}
 		}
+		AssignVisitor assignVisitor = new AssignVisitor();
+		node.getParent().accept(assignVisitor);
+
+		delegateProblemProcessing(node);
 		return true;
 	}
 
@@ -221,14 +138,7 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
-		String name = node.getName().toString();
-
-		ConventionViolationType problem = ConventionViolationType.NON_STATIC_FINAL_CASE_VIOLATION;
-		if (this.problemsToCheck.contains(problem)) {
-			checkLowerCaseAtStart(name, "Variable", true, sourceLine(node), problem);
-			checkUnderscore(name, "Variable", false, sourceLine(node), problem);
-		}
-
+		delegateProblemProcessing(node);
 		return true;
 	}
 

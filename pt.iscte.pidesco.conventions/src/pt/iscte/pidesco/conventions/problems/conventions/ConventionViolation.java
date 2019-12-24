@@ -12,7 +12,7 @@ import pt.iscte.pidesco.conventions.problems.Problem;
  */
 public class ConventionViolation extends Problem {
 
-	public ConventionViolation(String filePath, int line, ConventionViolationType violation, String elementName) {
+	public ConventionViolation(String filePath, int line, NonStaticFinalCaseViolation violation, String elementName) {
 		super(filePath, line, violation, elementName);
 	}
 

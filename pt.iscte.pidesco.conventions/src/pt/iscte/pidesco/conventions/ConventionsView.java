@@ -27,8 +27,7 @@ import com.google.common.collect.MultimapBuilder;
 import pt.iscte.pidesco.conventions.parser.ConventionCheckerVisitor;
 import pt.iscte.pidesco.conventions.problems.Problem;
 import pt.iscte.pidesco.conventions.problems.ProblemType;
-import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType;
-import pt.iscte.pidesco.conventions.problems.smells.CodeSmellType;
+import pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
@@ -93,23 +92,38 @@ public class ConventionsView implements PidescoView {
 		// maybe add a button on the conventions checker to filter classes that have
 		// problems
 	}
+	
+	private ArrayList<ProblemType> createExtensionsViolations(Composite viewArea) {
+		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
+		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.xtraconventions");
+
+		IExtension[] extensions = extensionPoint.getExtensions();
+		ArrayList<ProblemType> problemTypes = new ArrayList<ProblemType>();
+		for(IExtension e : extensions) {
+			IConfigurationElement[] confElements = e.getConfigurationElements();
+			for(IConfigurationElement c : confElements) {
+				String s = c.getAttribute("name");
+				try {
+					ProblemType o = (ProblemType) c.createExecutableExtension("class");
+					problemTypes.add(o);
+					System.out.println(o);
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		
+		return problemTypes;
+
+	}
 
 	private void createButtons(Composite viewArea) {
 		// TODO selection buttons for:
 		// all of the available convention violation types
 		// all of the code smell types
 
-		ArrayList<ProblemType> problems = new ArrayList<ProblemType>();
-
-		ConventionViolationType[] violations = ConventionViolationType.values();
-		for (ConventionViolationType violation : violations) {
-			problems.add(violation);
-		}
-
-		CodeSmellType[] smells = CodeSmellType.values();
-		for (CodeSmellType smell : smells) {
-			problems.add(smell);
-		}
+		ArrayList<ProblemType> problems = createExtensionsViolations(viewArea);
+		problems.add(new NonStaticFinalCaseViolation());
 
 		for (ProblemType problem : problems) {
 			Button b = new Button(viewArea, SWT.CHECK);
@@ -118,16 +132,26 @@ public class ConventionsView implements PidescoView {
 		}
 
 
-		createExtensionsViolations(viewArea);
+
 
 
 		// TODO action buttons for:
 		// pull the lever, kronk (run the checker)
 		// filter classes in the Project Browser so that only those with problems are
 		// displayed
+		
+		/*
+		 * Button to Run Checker
+		 */
+		createRunCheckerButton(viewArea);
+
+		viewArea.layout();
+
+	}
+
+	private void createRunCheckerButton(Composite viewArea) {
 		Button b = new Button(viewArea, SWT.PUSH);
 		b.setText("Run Checker");
-
 		b.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -169,29 +193,5 @@ public class ConventionsView implements PidescoView {
 				return problemsToCheck;
 			}
 		});
-
-		viewArea.layout();
-
-	}
-
-	private void createExtensionsViolations(Composite viewArea) {
-		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
-		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.testext");
-		//FIXME Change the extensionpoint!
-
-		IExtension[] extensions = extensionPoint.getExtensions();
-		for(IExtension e : extensions) {
-			IConfigurationElement[] confElements = e.getConfigurationElements();
-			for(IConfigurationElement c : confElements) {
-				String s = c.getAttribute("name");
-				try {
-					ProblemType o = (ProblemType) c.createExecutableExtension("class");
-				} catch (CoreException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}
-
 	}
 }
