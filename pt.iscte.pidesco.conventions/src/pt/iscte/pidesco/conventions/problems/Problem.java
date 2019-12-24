@@ -1,5 +1,7 @@
 package pt.iscte.pidesco.conventions.problems;
 
+import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
+
 /**
  * Defines a "problem" with some Java source element. These are used to keep
  * track of violations that are spotted in analyzed code.<br>
@@ -12,11 +14,11 @@ public abstract class Problem {
 	private String filePath;
 	private int line;
 	
-	private ProblemType problemType;
+	private ViolationType problemType;
 
 	private String elementName;
 
-	public Problem(String filePath, int line, ProblemType problemType, String elementName) {
+	public Problem(String filePath, int line, ViolationType problemType, String elementName) {
 		setFilePath(filePath);
 		this.line = line;
 		this.problemType = problemType;
@@ -35,7 +37,7 @@ public abstract class Problem {
 		return line;
 	}
 	
-	public ProblemType getProblemType() {
+	public ViolationType getProblemType() {
 		return problemType;
 	}
 

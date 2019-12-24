@@ -1,6 +1,7 @@
 package pt.iscte.pidesco.conventions.parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -19,18 +20,18 @@ import com.google.common.collect.MultimapBuilder;
 
 import pt.iscte.pidesco.conventions.problems.CommonCodeChecks;
 import pt.iscte.pidesco.conventions.problems.Problem;
-import pt.iscte.pidesco.conventions.problems.ProblemType;
 import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolation;
 import pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation;
+import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
 
 public class ConventionCheckerVisitor extends ASTVisitor {
 
-	private ArrayList<ProblemType> problemsToCheck = new ArrayList<ProblemType>();
+	private ArrayList<ViolationType> problemsToCheck = new ArrayList<ViolationType>();
 	private ArrayList<String> filesToAnalyze = new ArrayList<String>();
 	private ListMultimap<String, Problem> detectedProblems;
 	private String currentFile;
 
-	public ConventionCheckerVisitor(ArrayList<ProblemType> problemsToCheck, ArrayList<String> filesToCheck) {
+	public ConventionCheckerVisitor(ArrayList<ViolationType> problemsToCheck, ArrayList<String> filesToCheck) {
 		this.problemsToCheck = problemsToCheck;
 		this.filesToAnalyze = filesToCheck;
 	}
@@ -49,8 +50,10 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 * 
 	 * @param violation - the committed violation.
 	 */
-	private void addProblem(ConventionViolation violation) {
-		this.detectedProblems.put(this.currentFile, violation);
+	private void addProblems(List<ConventionViolation> violations) {
+		for (ConventionViolation violation: violations) {
+			this.detectedProblems.put(this.currentFile, violation);
+		}
 	}
 
 	/**
@@ -60,10 +63,10 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 * @param node - the current AST node
 	 */
 	private void delegateProblemProcessing(ASTNode node) {
-		for (ProblemType problem : this.problemsToCheck) {
-			ConventionViolation violation = problem.analyzeCode(node, this.currentFile);
-			if (violation != null) {
-				addProblem(violation);
+		for (ViolationType problem : this.problemsToCheck) {
+			List<ConventionViolation> violations = problem.analyzeCode(node, this.currentFile);
+			if (violations.size() > 0) {
+				addProblems(violations);
 			}
 		}
 	}

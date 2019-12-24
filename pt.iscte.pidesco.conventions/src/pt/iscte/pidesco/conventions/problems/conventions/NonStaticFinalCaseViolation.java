@@ -1,5 +1,7 @@
 package pt.iscte.pidesco.conventions.problems.conventions;
 
+import java.util.ArrayList;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -7,7 +9,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import pt.iscte.pidesco.conventions.problems.CommonCodeChecks;
-import pt.iscte.pidesco.conventions.problems.ProblemType;
 
 /**
  * Lists out the types of Convention Violations.
@@ -15,7 +16,7 @@ import pt.iscte.pidesco.conventions.problems.ProblemType;
  * @author grovy
  *
  */
-public class NonStaticFinalCaseViolation implements ProblemType {
+public class NonStaticFinalCaseViolation implements ViolationType {
 
 	@Override
 	public String getProperName() {
@@ -23,11 +24,11 @@ public class NonStaticFinalCaseViolation implements ProblemType {
 	}
 
 	@Override
-	public ConventionViolation analyzeCode(ASTNode node, String filePath) {
-		System.out.println(node + " - " + node.getClass().getCanonicalName());
+	public ArrayList<ConventionViolation> analyzeCode(ASTNode node, String filePath) {
+		ArrayList<ConventionViolation> result = new ArrayList<ConventionViolation>();
 		if (!(node instanceof MethodDeclaration) && !(node instanceof SingleVariableDeclaration)
 				&& !(node instanceof VariableDeclarationFragment)) {
-			return null;
+			return result;
 		}
 		String name = new String();
 		int line = CommonCodeChecks.sourceLine(node);
@@ -53,9 +54,10 @@ public class NonStaticFinalCaseViolation implements ProblemType {
 		boolean isBadCode = isProblematic(name, shouldStartWithLowerCase, shouldHaveUnderscore);
 		if (isBadCode) {
 			ConventionViolation violation = new ConventionViolation(filePath, line, this, name);
-			return violation;
+			result.add(violation);
+			return result;
 		} else {
-			return null;
+			return result;
 		}
 	}
 

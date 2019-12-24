@@ -1,16 +1,16 @@
-package pt.iscte.pidesco.conventions.problems;
+package pt.iscte.pidesco.conventions.problems.conventions;
+
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
-import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolation;
-
 /**
- * Defines required behaviour for specific types of Problems.
+ * Defines required behaviour for specific types of Violations.
  * 
  * @author grovy
  *
  */
-public interface ProblemType {
+public interface ViolationType {
 	/**
 	 * Defines a proper name for the Problem Type, so it can be sorted out by the
 	 * Conventions program without much hassle.
@@ -28,7 +28,8 @@ public interface ProblemType {
 	 * 
 	 * @param ASTNode
 	 * @param filePath
-	 * @return null if no Violation is found, or a Violation if there is one
+	 * @return empty list if no Violation is found, or a list with convention
+	 *         violations if any is found
 	 */
-	public ConventionViolation analyzeCode(ASTNode node, String filePath);
+	public List<ConventionViolation> analyzeCode(ASTNode node, String filePath);
 }

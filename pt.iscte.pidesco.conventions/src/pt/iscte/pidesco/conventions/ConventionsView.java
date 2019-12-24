@@ -26,8 +26,8 @@ import com.google.common.collect.MultimapBuilder;
 
 import pt.iscte.pidesco.conventions.parser.ConventionCheckerVisitor;
 import pt.iscte.pidesco.conventions.problems.Problem;
-import pt.iscte.pidesco.conventions.problems.ProblemType;
 import pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation;
+import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
@@ -38,7 +38,7 @@ public class ConventionsView implements PidescoView {
 
 	ArrayList<String> filesToAnalyze = new ArrayList<String>();
 	ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
-	HashMap<ProblemType, Button> problemCheckboxes = new HashMap<ProblemType, Button>();
+	HashMap<ViolationType, Button> problemCheckboxes = new HashMap<ViolationType, Button>();
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -93,18 +93,18 @@ public class ConventionsView implements PidescoView {
 		// problems
 	}
 	
-	private ArrayList<ProblemType> createExtensionsViolations(Composite viewArea) {
+	private ArrayList<ViolationType> createExtensionsViolations(Composite viewArea) {
 		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.xtraconventions");
 
 		IExtension[] extensions = extensionPoint.getExtensions();
-		ArrayList<ProblemType> problemTypes = new ArrayList<ProblemType>();
+		ArrayList<ViolationType> problemTypes = new ArrayList<ViolationType>();
 		for(IExtension e : extensions) {
 			IConfigurationElement[] confElements = e.getConfigurationElements();
 			for(IConfigurationElement c : confElements) {
 				String s = c.getAttribute("name");
 				try {
-					ProblemType o = (ProblemType) c.createExecutableExtension("class");
+					ViolationType o = (ViolationType) c.createExecutableExtension("class");
 					problemTypes.add(o);
 					System.out.println(o);
 				} catch (CoreException e1) {
@@ -122,10 +122,10 @@ public class ConventionsView implements PidescoView {
 		// all of the available convention violation types
 		// all of the code smell types
 
-		ArrayList<ProblemType> problems = createExtensionsViolations(viewArea);
+		ArrayList<ViolationType> problems = createExtensionsViolations(viewArea);
 		problems.add(new NonStaticFinalCaseViolation());
 
-		for (ProblemType problem : problems) {
+		for (ViolationType problem : problems) {
 			Button b = new Button(viewArea, SWT.CHECK);
 			b.setText(problem.getProperName());
 			this.problemCheckboxes.put(problem, b);
@@ -156,7 +156,7 @@ public class ConventionsView implements PidescoView {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				b.setEnabled(false); // we don't want the user to run the checker multiple times at once
-				ArrayList<ProblemType> problemsToCheck = getProblemsToCheck();
+				ArrayList<ViolationType> problemsToCheck = getProblemsToCheck();
 				ConventionCheckerVisitor checker = new ConventionCheckerVisitor(problemsToCheck, filesToAnalyze);
 				try {
 					filesAndProblems = checker.runChecker();
@@ -183,9 +183,9 @@ public class ConventionsView implements PidescoView {
 				System.out.println("Done.");
 			}
 
-			private ArrayList<ProblemType> getProblemsToCheck() {
-				ArrayList<ProblemType> problemsToCheck = new ArrayList<ProblemType>();
-				for (ProblemType problem : problemCheckboxes.keySet()) {
+			private ArrayList<ViolationType> getProblemsToCheck() {
+				ArrayList<ViolationType> problemsToCheck = new ArrayList<ViolationType>();
+				for (ViolationType problem : problemCheckboxes.keySet()) {
 					if (problemCheckboxes.get(problem).getSelection()) {
 						problemsToCheck.add(problem);
 					}

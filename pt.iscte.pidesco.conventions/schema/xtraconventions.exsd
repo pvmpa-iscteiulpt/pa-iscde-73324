@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.conventions.problems.ProblemType"/>
+                  <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.conventions.problems.conventions.ViolationType"/>
                </appinfo>
             </annotation>
          </attribute>
