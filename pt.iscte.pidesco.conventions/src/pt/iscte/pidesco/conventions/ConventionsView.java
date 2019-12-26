@@ -36,14 +36,14 @@ import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 public class ConventionsView implements PidescoView {
 
-	ArrayList<String> filesToAnalyze = new ArrayList<String>();
-	ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
-	HashMap<ViolationType, Button> problemCheckboxes = new HashMap<ViolationType, Button>();
+	private ArrayList<String> filesToAnalyze = new ArrayList<String>();
+	private ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
+	private HashMap<ViolationType, Button> problemCheckboxes = new HashMap<ViolationType, Button>();
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
-		BundleContext context = Activator.getContext();
+		BundleContext context = ConventionsCheckerActivator.getContext();
 		initializeProjectBrowserService(context);
 		initializeJavaEditorService(context);
 		createButtons(viewArea);
