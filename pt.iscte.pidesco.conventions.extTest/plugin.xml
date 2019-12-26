@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="pt.iscte.pidesco.conventions.xtraconventions">
+      <item
+            class="pt.iscte.pidesco.conventions.exttest.StaticFinalSnakeCaseViolation"
+            name="Static Final Snake Case Violation">
+      </item>
+   </extension>
+
+</plugin>
