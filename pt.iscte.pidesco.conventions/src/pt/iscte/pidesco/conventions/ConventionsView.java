@@ -36,7 +36,12 @@ import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 public class ConventionsView implements PidescoView {
 
-	private ArrayList<String> filesToAnalyze = new ArrayList<String>();
+	public static final String VIEW_ID = "pt.iscte.pidesco.conventions.co1";
+	private static ConventionsView instance;
+
+	private ArrayList<String> filesToAnalyzeFromProjectBrowser = new ArrayList<String>();
+	private ArrayList<String> filesToAnalyzeFromServices = new ArrayList<String>();
+
 	private ListMultimap<String, Problem> filesAndProblems = MultimapBuilder.hashKeys().arrayListValues().build();
 	private HashMap<ViolationType, Button> problemCheckboxes = new HashMap<ViolationType, Button>();
 
@@ -47,7 +52,45 @@ public class ConventionsView implements PidescoView {
 		initializeProjectBrowserService(context);
 		initializeJavaEditorService(context);
 		createButtons(viewArea);
-		// TODO createExtensions();
+		instance = this;
+	}
+
+	/**
+	 * Returns the current instance of the conventions view.
+	 * 
+	 * @return Current instance of the conventions view.
+	 */
+	public static ConventionsView getInstance() {
+		return instance;
+	}
+
+	/**
+	 * Returns a list of files to analyze, exclusive for Service use.
+	 * 
+	 * @return non-null ArrayList of file paths (as Strings) to the selected valid
+	 *         .java files.
+	 */
+	protected ArrayList<String> getServiceFiles() {
+		return this.filesToAnalyzeFromServices;
+	}
+
+	/**
+	 * Returns a Multimap list of files associated with problems.
+	 * 
+	 * @return non-null ListMultiMap of absolute file paths associated with
+	 *         Problems.
+	 */
+	protected ListMultimap<String, Problem> getFilesAndProblems() {
+		return this.filesAndProblems;
+	}
+
+	/**
+	 * Returns the available problems for scanning.
+	 * 
+	 * @return non-null HashMap of problems associated with buttons.
+	 */
+	protected HashMap<ViolationType, Button> getProblemCheckboxes() {
+		return this.problemCheckboxes;
 	}
 
 	/**
@@ -84,7 +127,7 @@ public class ConventionsView implements PidescoView {
 						newFiles.add(filePath);
 					}
 				}
-				filesToAnalyze = newFiles;
+				filesToAnalyzeFromProjectBrowser = newFiles;
 			}
 		});
 
@@ -92,16 +135,16 @@ public class ConventionsView implements PidescoView {
 		// maybe add a button on the conventions checker to filter classes that have
 		// problems
 	}
-	
+
 	private ArrayList<ViolationType> createExtensionsViolations(Composite viewArea) {
 		IExtensionRegistry extRegistry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pt.iscte.pidesco.conventions.xtraconventions");
 
 		IExtension[] extensions = extensionPoint.getExtensions();
 		ArrayList<ViolationType> problemTypes = new ArrayList<ViolationType>();
-		for(IExtension e : extensions) {
+		for (IExtension e : extensions) {
 			IConfigurationElement[] confElements = e.getConfigurationElements();
-			for(IConfigurationElement c : confElements) {
+			for (IConfigurationElement c : confElements) {
 				String s = c.getAttribute("name");
 				try {
 					ViolationType o = (ViolationType) c.createExecutableExtension("class");
@@ -112,16 +155,12 @@ public class ConventionsView implements PidescoView {
 				}
 			}
 		}
-		
+
 		return problemTypes;
 
 	}
 
 	private void createButtons(Composite viewArea) {
-		// TODO selection buttons for:
-		// all of the available convention violation types
-		// all of the code smell types
-
 		ArrayList<ViolationType> problems = createExtensionsViolations(viewArea);
 		problems.add(new NonStaticFinalCaseViolation());
 
@@ -131,15 +170,6 @@ public class ConventionsView implements PidescoView {
 			this.problemCheckboxes.put(problem, b);
 		}
 
-
-
-
-
-		// TODO action buttons for:
-		// pull the lever, kronk (run the checker)
-		// filter classes in the Project Browser so that only those with problems are
-		// displayed
-		
 		/*
 		 * Button to Run Checker
 		 */
@@ -157,7 +187,13 @@ public class ConventionsView implements PidescoView {
 			public void widgetSelected(SelectionEvent e) {
 				b.setEnabled(false); // we don't want the user to run the checker multiple times at once
 				ArrayList<ViolationType> problemsToCheck = getProblemsToCheck();
-				ConventionCheckerVisitor checker = new ConventionCheckerVisitor(problemsToCheck, filesToAnalyze);
+				for (String filePath : filesToAnalyzeFromServices) {
+					if (!filesToAnalyzeFromProjectBrowser.contains(filePath)) {
+						filesToAnalyzeFromProjectBrowser.add(filePath);
+					}
+				}
+				ConventionCheckerVisitor checker = new ConventionCheckerVisitor(problemsToCheck,
+						filesToAnalyzeFromProjectBrowser);
 				try {
 					filesAndProblems = checker.runChecker();
 					warnUserAboutFoundProblems();
@@ -171,12 +207,13 @@ public class ConventionsView implements PidescoView {
 				System.out.println(barrier);
 				System.out.println("Java Convention Checker");
 				Map<String, Collection<Problem>> fileProblemMap = filesAndProblems.asMap();
-				for (String problematicFile: fileProblemMap.keySet()) {
+				for (String problematicFile : fileProblemMap.keySet()) {
 					System.out.println(barrier);
 					System.out.println(problematicFile);
 					Collection<Problem> problemsInFile = fileProblemMap.get(problematicFile);
-					for (Problem problemInFile: problemsInFile) {
-						System.out.println(problemInFile.getProblemType().getProperName() + " on Line " + problemInFile.getStartingLine() + ": " + problemInFile.getElementName());
+					for (Problem problemInFile : problemsInFile) {
+						System.out.println(problemInFile.getProblemType().getProperName() + " on Line "
+								+ problemInFile.getStartingLine() + ": " + problemInFile.getElementName());
 					}
 				}
 				System.out.println(barrier);
