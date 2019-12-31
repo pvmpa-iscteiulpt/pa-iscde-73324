@@ -98,10 +98,7 @@
 
 2. Add pt.iscte.pidesco.conventions as a required project on your build path
 
-3. Now you have two choices:
-Implement pt.iscte.conventions.problems.ProblemType on a Class
-OR
-Implement pt.iscte.conventions.problems.ProblemType on an Enum &lt;--- This is the recommended option because it allows you to assign problems to unique static identifiers easily (even if the code looks a bit weird), see pt.iscte.pidesco.conventions.problems.conventions.ConventionViolationType as an example!
+3. Implement pt.iscte.conventions.problems.ProblemType on a Class
 
 4. Add your new plug-in on pidesco&apos;s run configuration.
 

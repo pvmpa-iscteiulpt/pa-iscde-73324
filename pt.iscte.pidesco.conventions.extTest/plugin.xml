@@ -8,5 +8,12 @@
             name="Static Final Snake Case Violation">
       </item>
    </extension>
+   <extension
+         point="pt.iscte.pidesco.conventions.xtraconventions">
+      <item
+            class="pt.iscte.pidesco.conventions.exttest.TestViolation"
+            name="Test Violation">
+      </item>
+   </extension>
 
 </plugin>
