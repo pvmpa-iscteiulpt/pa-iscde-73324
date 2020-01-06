@@ -1,5 +1,7 @@
 package pt.iscte.pidesco.conventions.problems;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+
 import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
 
 /**
@@ -17,12 +19,14 @@ public abstract class Problem {
 	private ViolationType problemType;
 
 	private String elementName;
+	private ASTNode node;
 
-	public Problem(String filePath, int line, ViolationType problemType, String elementName) {
+	public Problem(String filePath, int line, ViolationType problemType, String elementName, ASTNode node) {
 		setFilePath(filePath);
 		this.line = line;
 		this.problemType = problemType;
 		this.elementName = elementName;
+		this.node = node;
 	}
 
 	public void setFilePath(String filePath) {
@@ -47,6 +51,10 @@ public abstract class Problem {
 
 	public void setStartingLine(int startingLine) {
 		this.line = startingLine;
+	}
+
+	public ASTNode getNode() {
+		return node;
 	}
 
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import pt.iscte.pidesco.conventions.problems.CommonCodeChecks;
@@ -53,7 +52,7 @@ public class NonStaticFinalCaseViolation implements ViolationType {
 
 		boolean isBadCode = isProblematic(name, shouldStartWithLowerCase, shouldHaveUnderscore);
 		if (isBadCode) {
-			ConventionViolation violation = new ConventionViolation(filePath, line, this, name);
+			ConventionViolation violation = new ConventionViolation(filePath, line, this, name, node);
 			result.add(violation);
 			return result;
 		} else {
