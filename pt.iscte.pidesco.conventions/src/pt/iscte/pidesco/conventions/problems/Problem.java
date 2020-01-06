@@ -13,52 +13,75 @@ import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
  */
 public abstract class Problem {
 
-	private String filePath;
+	private String absoluteFilePath;
 	private int line;
-	
+
 	private ViolationType problemType;
 
 	private String elementName;
 	private ASTNode node;
 
 	public Problem(String filePath, int line, ViolationType problemType, String elementName, ASTNode node) {
-		setFilePath(filePath);
+		setAbsoluteFilePath(filePath);
 		this.line = line;
 		this.problemType = problemType;
 		this.elementName = elementName;
 		this.node = node;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath.trim();
+	/**
+	 * Sets a problem's file path. It should be absolute.
+	 * 
+	 * @param absoluteFilePath
+	 */
+	public void setAbsoluteFilePath(String absoluteFilePath) {
+		this.absoluteFilePath = absoluteFilePath.trim();
 	}
 
-	public String getFilePath() {
-		return filePath;
+	/**
+	 * Returns the problem's absolute file path.
+	 * 
+	 * @return absolute file path
+	 */
+	public String getAbsoluteFilePath() {
+		return absoluteFilePath;
 	}
 
+	/**
+	 * Returns the line in the source file where the problem begins.
+	 * 
+	 * @return line number
+	 */
 	public int getStartingLine() {
 		return line;
 	}
-	
+
+	/**
+	 * Returns the type of problem that this Problem is about.
+	 * 
+	 * @return instance of a ViolationType implementation
+	 */
 	public ViolationType getProblemType() {
 		return problemType;
 	}
 
+	/**
+	 * Returns the name of the problematic element as a String. This is mostly
+	 * useful if the element in question is a variable, a method, a class - as in,
+	 * anything that actually does have a name.
+	 * 
+	 * @return the problematic element's name
+	 */
 	public String getElementName() {
 		return elementName;
 	}
 
-	public void setStartingLine(int startingLine) {
-		this.line = startingLine;
-	}
-
+	/**
+	 * Returns the problematic node.
+	 * @return the instance of ASTNode that is problematic
+	 */
 	public ASTNode getNode() {
 		return node;
 	}
-
-
-
-
 
 }

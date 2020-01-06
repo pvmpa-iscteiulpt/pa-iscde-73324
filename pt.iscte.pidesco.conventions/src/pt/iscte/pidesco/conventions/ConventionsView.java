@@ -34,6 +34,11 @@ import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserListener;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
+/**
+ * Represents a view for the Conventions Checker.
+ * @author grovy
+ *
+ */
 public class ConventionsView implements PidescoView {
 
 	public static final String VIEW_ID = "pt.iscte.pidesco.conventions.co1";

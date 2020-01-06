@@ -41,7 +41,6 @@ public class ConventionsCheckerServicesImpl implements ConventionsCheckerService
 		return instance.getProblemCheckboxes();
 	}
 
-	
 	private void activateView() {
 		ConventionsCheckerActivator.getInstance().getPidescoServices().openView(ConventionsView.VIEW_ID);
 	}

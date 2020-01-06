@@ -14,6 +14,11 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 public class JavaParser {
 
+	/**
+	 * Parses a Java file according to the given AST visitor.
+	 * @param filePath - absolute file path to the java file
+	 * @param visitor - AST visitor to be accepted to analyse the file
+	 */
 	public static void parse(String filePath, ASTVisitor visitor) {
 		assert filePath != null : "file cannot be null";
 		File file = new File(filePath);

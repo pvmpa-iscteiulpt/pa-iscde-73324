@@ -34,6 +34,13 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 		this.filesToAnalyze = filesToCheck;
 	}
 
+	/**
+	 * Runs the conventions checker parser on the selected files and saves the
+	 * detected Problems into a Multimap list.
+	 * 
+	 * @return instance of ListMultimap that links absolute file paths to lists of
+	 *         problems.
+	 */
 	public ListMultimap<String, Problem> runChecker() {
 		this.detectedProblems = MultimapBuilder.hashKeys().arrayListValues().build();
 		for (String fileToCheck : this.filesToAnalyze) {
@@ -49,7 +56,7 @@ public class ConventionCheckerVisitor extends ASTVisitor {
 	 * @param violation - the committed violation.
 	 */
 	private void addProblems(List<ConventionViolation> violations) {
-		for (ConventionViolation violation: violations) {
+		for (ConventionViolation violation : violations) {
 			this.detectedProblems.put(this.currentFile, violation);
 		}
 	}
