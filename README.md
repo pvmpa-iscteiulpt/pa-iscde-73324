@@ -2,6 +2,8 @@
 ## what is this???
 This is a Java Conventions Checker plug-in for PIDESCO. It's partially based on the class about AST we've had near the beginning of the semester. This is an academic project for Advanced Programming @ ISCTE-IUL. If you aren't involved with it, please take that into consideration. 
 
+Extra info: https://github.com/pvmpa-iscteiulpt/pa-iscde-73324/wiki
+
 ## how does it work???
 It analyses Abstract Syntax Tree (AST) nodes with Convention engines. A Convention engine is a class that looks at the contents of an AST Node (preferably of a specific type) and reports a non-null list of engine-specific Convention Violations if they exist. Convention Violations point at the problematic files's absolute path, the problematic lines, the problematic node's name in the code, and what the exact problem is (defined by the engine that found the problem).
 
