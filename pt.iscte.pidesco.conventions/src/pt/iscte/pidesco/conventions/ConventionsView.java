@@ -50,7 +50,6 @@ public class ConventionsView implements PidescoView {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
 		BundleContext context = ConventionsCheckerActivator.getContext();
 		initializeProjectBrowserService(context);
-		initializeJavaEditorService(context);
 		createButtons(viewArea);
 		instance = this;
 	}
@@ -94,18 +93,6 @@ public class ConventionsView implements PidescoView {
 	}
 
 	/**
-	 * Initialises the Java Editor Service for the Java Conventions Checker, so it
-	 * can annotate convention violations/code smells in problematic files.
-	 *
-	 * @param context
-	 */
-	private void initializeJavaEditorService(BundleContext context) {
-		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
-		JavaEditorServices javaServ = context.getService(serviceReference);
-		// TODO actually modify the java source files to annotate problems
-	}
-
-	/**
 	 * Initialises the Project Browser Service for the Java Conventions Checker, in
 	 * order to gather a list of classes that are meant to be checked. Each class is
 	 * represented by their absolute file path for loading simplicity's sake.
@@ -145,7 +132,6 @@ public class ConventionsView implements PidescoView {
 		for (IExtension e : extensions) {
 			IConfigurationElement[] confElements = e.getConfigurationElements();
 			for (IConfigurationElement c : confElements) {
-				String s = c.getAttribute("name");
 				try {
 					ViolationType o = (ViolationType) c.createExecutableExtension("class");
 					problemTypes.add(o);

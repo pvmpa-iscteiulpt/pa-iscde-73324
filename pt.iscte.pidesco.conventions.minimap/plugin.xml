@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="cv-inspector"
+         name="Convention Violation Inspector"
+         point="pt.iscte.pidesco.minimap.inspection">
+      <inspection
+            class="pt.iscte.pidesco.conventions.minimap.MinimapConventionViolationInspector"
+            description="Highlights lines that present known convention violations."
+            id="cv-inspector-engine"
+            name="Primary Convention Violation Inspector">
+      </inspection>
+   </extension>
+
+</plugin>

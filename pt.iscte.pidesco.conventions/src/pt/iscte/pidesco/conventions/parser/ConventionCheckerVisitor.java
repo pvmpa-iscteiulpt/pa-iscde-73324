@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -21,7 +20,6 @@ import com.google.common.collect.MultimapBuilder;
 import pt.iscte.pidesco.conventions.problems.CommonCodeChecks;
 import pt.iscte.pidesco.conventions.problems.Problem;
 import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolation;
-import pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation;
 import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
 
 public class ConventionCheckerVisitor extends ASTVisitor {
