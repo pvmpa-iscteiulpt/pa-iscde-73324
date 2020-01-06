@@ -5,7 +5,6 @@ import pt.iscte.pidesco.conventions.problems.conventions.ConventionViolation;
 import pt.iscte.pidesco.conventions.problems.conventions.ViolationType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -39,7 +38,7 @@ public class StaticFinalSnakeCaseViolation implements ViolationType {
 				boolean isAlreadyBad = false;
 				for (char c : name.toCharArray()) {
 					if (Character.isLowerCase(c)) {
-						result.add(new ConventionViolation(filePath, line, this, name));
+						result.add(new ConventionViolation(filePath, line, this, name, node));
 						isAlreadyBad = true;
 						break; // we don't want to keep adding the same field to the naughty list over and
 									// over!
@@ -49,7 +48,7 @@ public class StaticFinalSnakeCaseViolation implements ViolationType {
 					}
 				}
 				if (!foundUnderscore && !isAlreadyBad) {
-					result.add(new ConventionViolation(filePath, line, this, name));
+					result.add(new ConventionViolation(filePath, line, this, name, node));
 				}
 			}
 		}
