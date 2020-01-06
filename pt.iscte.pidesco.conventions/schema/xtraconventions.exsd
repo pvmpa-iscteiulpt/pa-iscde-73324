@@ -94,11 +94,11 @@
       </appinfo>
       <documentation>
          Instructions:
-1. Create a new plug-in project and define this as an extension;
+1. Create a new plug-in project and define pt.iscte.pidesco.conventions.xtraconventions as an extension;
 
-2. Add pt.iscte.pidesco.conventions as a required project on your build path;
+2. Implement pt.iscte.conventions.problems.ProblemType on a Class. Don&apos;t forget to point to it in the Extensions;
 
-3. Implement pt.iscte.conventions.problems.ProblemType on a Class. Don&apos;t forget to point to it in the Extensions;
+3. Import this component&apos;s exported modules as needed;
 
 4. Add your new plug-in on pidesco&apos;s run configuration;
 
