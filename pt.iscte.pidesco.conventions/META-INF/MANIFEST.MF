@@ -15,4 +15,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: pt.iscte.pidesco.conventions
 Bundle-ActivationPolicy: lazy
 Export-Package: pt.iscte.pidesco.conventions.problems,
- pt.iscte.pidesco.conventions.problems.conventions
+ pt.iscte.pidesco.conventions.problems.conventions,
+ pt.iscte.pidesco.conventions.service
