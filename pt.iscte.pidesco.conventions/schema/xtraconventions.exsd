@@ -84,7 +84,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         Coming soon
+         Available in a separate project called &quot;pt.iscte.pidesco.conventions.extTest&quot;
       </documentation>
    </annotation>
 
@@ -94,13 +94,13 @@
       </appinfo>
       <documentation>
          Instructions:
-1. Create a new plug-in project and define this as an extension
+1. Create a new plug-in project and define this as an extension;
 
-2. Add pt.iscte.pidesco.conventions as a required project on your build path
+2. Add pt.iscte.pidesco.conventions as a required project on your build path;
 
-3. Implement pt.iscte.conventions.problems.ProblemType on a Class
+3. Implement pt.iscte.conventions.problems.ProblemType on a Class. Don&apos;t forget to point to it in the Extensions;
 
-4. Add your new plug-in on pidesco&apos;s run configuration.
+4. Add your new plug-in on pidesco&apos;s run configuration;
 
 5. You should see your new problem(s) on the Java Conventions Checker plug-in, and once you run the checker and if your problems are detected, it&apos;ll register them.
       </documentation>
@@ -111,7 +111,7 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         Got nothin&apos; sauce boss
+         Another implementation can be found in &quot;pt.iscte.pidesco.conventions.problems.conventions.NonStaticFinalCaseViolation&quot; though this class isn&apos;t necessary to use this extension point.
       </documentation>
    </annotation>
 
